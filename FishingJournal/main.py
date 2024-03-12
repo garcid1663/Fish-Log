@@ -2,6 +2,8 @@
 import tkinter as tk
 from tkinter import *
 from database import create_table, insert_entry, search_database, delete_entry
+import pathlib, os
+
 
 # Create the main window
 root = tk.Tk()
@@ -9,7 +11,10 @@ root.title("Fishing Log")
 root.geometry("800x600")
 #root.maxsize(800,800)
 
-img= PhotoImage(file='C:\\Users\\dillo\\OneDrive\\Desktop\\APCV 498\\FishingJournal\\picfish.ico')
+img_file_name = "picfish.ico"
+current_dir = pathlib.Path(__file__).parent.resolve() # current directory
+img_path = os.path.join(current_dir, img_file_name)
+img= PhotoImage(file=img_path)
 root.iconphoto(False,img)
 
 
