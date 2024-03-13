@@ -80,7 +80,7 @@ style.theme_use("default")
 style.configure("Treeview",
                 rowheight=25)
 
-# style for Treeview headings
+# style for Treeview headings maintains default color provided by Tkinter
 style.configure("Treeview.Heading",
                 background="#d9d9d9",
                 foreground="black",
