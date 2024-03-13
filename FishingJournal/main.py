@@ -10,8 +10,8 @@ import pathlib, os
 root = tk.Tk()
 root.title("Fishing Log")
 root.geometry("800x600")
-#root.maxsize(800,800)
 
+#dynamic icon fish image
 img_file_name = "picfish.ico"
 current_dir = pathlib.Path(__file__).parent.resolve() # current directory
 img_path = os.path.join(current_dir, img_file_name)
@@ -19,7 +19,7 @@ img= PhotoImage(file=img_path)
 root.iconphoto(False,img)
 
 
-#frames for left & right sides==================NEW ================CHANGES========21FEB
+#frames for left & right sides
 left_frame = tk.Frame(root)
 left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
@@ -50,9 +50,10 @@ for i in range(5):
     entry.grid(row=0, column=1, sticky=tk.EW, padx=(5, 10))
     entries.append(entry)
 
-    # Configure the column weights to allocate extra space to the entry widget
+    # Configure the column weights to stretch with screen size change to the entry widget
     entry_frame.grid_columnconfigure(1, weight=1)
 
+#function to add data passed from entry boxes
 def submit_action():
     # Collect data from all text boxes
     data = [entry.get() for entry in entries]
@@ -60,38 +61,35 @@ def submit_action():
     insert_entry(*data)
     print("Saved to database:", data)
 
-# Create a single submit button
+# create submit button (looking to change to debounce and remove button)
 submit_button = tk.Button(left_frame, text="Submit", command=submit_action)#CHANGED ROOT TO LEFT_FRAME
 submit_button.pack(pady=10)
 
-# Initialize the database table
+# initialize the database table
 create_table()
 
-# Add a label before the search box
+#text before the search box
 search_label = tk.Label(search_frame, text="Search by keyword:")
 search_label.pack(side=tk.LEFT, padx=(0,5))
 
-# Create and configure style
+# create and configure style for display box only
 style = ttk.Style()
 style.theme_use("default")
 
-# Style for Treeview
+# style for Treeview
 style.configure("Treeview",
-                foreground="black",
-                rowheight=25,
-                fieldbackground="#D3D3D3")
+                rowheight=25)
 
-# Style for Treeview Header
+# style for Treeview headings
 style.configure("Treeview.Heading",
-                background="#B0B0B0",
+                background="#d9d9d9",
                 foreground="black",
-                font=('Arial', 10, 'bold'))
+                font=('Arial', 10))
 
-
-
-# Grid lines in Treeview
-style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})]) # Remove borders
-style.configure("Treeview", grid_lines="both") # "both", "vertical" or "horizontal"
+# configure so headers do not change color when cursor hovers
+style.map("Treeview.Heading",
+          background=[('active', '#d9d9d9')],
+          foreground=[('active', 'black')])
 
 #header names in display box
 column_headers = ["Fish Species","Weight (LBs)", "Lure Type", "Location", "Date"]
@@ -102,8 +100,10 @@ result_tree = ttk.Treeview(right_frame, columns=column_headers, show='headings')
 for col in column_headers:
     result_tree.heading(col, text=col)
 
+#organize headers with .pack()
 result_tree.pack(padx=(1,1), pady=5, fill=tk.BOTH,expand= True)
 
+#search function displays information typed into search box
 def search_action(event=None):
     global entry_ids
     entry_ids = []  # Clear the previous ids
@@ -118,6 +118,7 @@ def search_action(event=None):
 total_width = 500  # Width of the Treeview
 column_width = total_width // len(column_headers)  # Divide equally among columns
 
+# 
 for col in column_headers:
     result_tree.column(col, width=column_width, anchor='w')
 
@@ -133,10 +134,6 @@ search_entry.bind("<Return>", search_action)
 search_button = tk.Button(search_frame, text="Search", command=search_action)
 search_button.pack(side=tk.LEFT)
 
-# Add a list box to display the results
-#result_list = tk.Listbox(right_frame)#CHANGED ROOT TO RIGHT_FRAME
-#result_list.pack(padx=(10,10), pady=5, fill=tk.BOTH, expand=True)
-
 def delete_action():
     global entry_ids
     selection = result_tree.selection()  # Get the selected items
@@ -150,7 +147,7 @@ def delete_action():
             result_tree.delete(selected_item)  # Remove from Treeview
 
 # Add a delete button
-delete_button = tk.Button(right_frame, text="Delete", command=delete_action)#CHANGED ROOT TO RIGHT_FRAME
+delete_button = tk.Button(right_frame, text="Delete", command=delete_action)
 delete_button.pack(pady=5)
 
 # Start the GUI event loop
