@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from database import create_table, insert_entry, search_database, delete_entry
-import pathlib, os
+import pathlib, os, datetime
 
 
 # Create the main window
@@ -26,17 +26,17 @@ left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 right_frame = tk.Frame(root)
 right_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-# Create a frame for search box and button
+#create a frame for search box and button
 search_frame = tk.Frame(right_frame)
 search_frame.pack(pady=5)
 
-# Labels for the entry boxes
+#labels for the entry boxes
 entry_labels = ["Fish Species","Weight (LBs)", "Lure Type", "Location", "Date"]
 
-# Initialize the list to hold the entry widgets
+#initialize the list to hold the entry widgets
 entries = []
 
-#Create text boxes with labels
+#create text boxes with labels
 label_width = max(len(text) for text in entry_labels)
 
 for i in range(5):
@@ -50,20 +50,39 @@ for i in range(5):
     entry.grid(row=0, column=1, sticky=tk.EW, padx=(5, 10))
     entries.append(entry)
 
-    # Configure the column weights to stretch with screen size change to the entry widget
+    # configure the column weights to stretch with screen size change to the entry widget
     entry_frame.grid_columnconfigure(1, weight=1)
 
 #function to add data passed from entry boxes
-def submit_action():
-    # Collect data from all text boxes
+def submit_action(event=None):
+    # collect data from all text boxes
     data = [entry.get() for entry in entries]
-    # Insert the data into the database
-    insert_entry(*data)
+    # insert the data into the database
+    insert_entry(data[0], data[1], data[2], data[3], data[4])
+    search_action()
     print("Saved to database:", data)
 
+#bind return key to submit data in all entry boxes
+for entry in entries:
+    entry.bind("<Return>", submit_action)
+
+#function to clear all entry boxes
+def clear_action():
+    for entry in entries:
+        entry.delete(0,END)
+
+#create frame for submit and clear button
+entry_button_frame = tk.Frame(left_frame)
+entry_button_frame.pack(anchor=CENTER, pady=5)
+
+
 # create submit button (looking to change to debounce and remove button)
-submit_button = tk.Button(left_frame, text="Submit", command=submit_action)#CHANGED ROOT TO LEFT_FRAME
-submit_button.pack(pady=10)
+submit_button = tk.Button(entry_button_frame, text="Submit", command=submit_action)#CHANGED ROOT TO LEFT_FRAME
+submit_button.pack(side= tk.LEFT, padx=(90,0))
+
+# clear button for entry boxes
+clear_button = tk.Button(entry_button_frame, text="Clear", command=clear_action)
+clear_button.pack(side= tk.RIGHT,padx=10)
 
 # initialize the database table
 create_table()
@@ -95,7 +114,7 @@ style.map("Treeview.Heading",
 column_headers = ["Fish Species","Weight (LBs)", "Lure Type", "Location", "Date"]
 
 #use Treeview to incorporate headers on displayed columns
-result_tree = ttk.Treeview(right_frame, columns=column_headers, show='headings')
+result_tree = ttk.Treeview(right_frame, columns=column_headers, show='headings', selectmode='extended')
 
 for col in column_headers:
     result_tree.heading(col, text=col)
