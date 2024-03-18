@@ -20,7 +20,7 @@ def create_table():
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS entries (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    column1 TEXT,
+                    column1 TEXT, 
                     column2 TEXT,
                     column3 TEXT,
                     column4 TEXT,
@@ -62,6 +62,20 @@ def search_database(query):
     else:
         print("Error! Cannot create the database connection.")
         return []
+    
+def get_total_lbs_caught():
+    """Return the total weight of all fish caught."""
+    conn = create_connection()
+    if conn is not None:
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT SUM(column2) FROM entries")
+            return cursor.fetchone()[0]
+        finally:
+            conn.close()
+    else:
+        print("Error! Cannot create the database connection.")
+        return 0
     
 def delete_entry(entry_id):
     conn = create_connection()

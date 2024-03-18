@@ -2,7 +2,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from database import create_table, insert_entry, search_database, delete_entry
+from database import create_table, insert_entry, search_database, delete_entry, get_total_lbs_caught
 import pathlib, os
 
 
@@ -64,6 +64,13 @@ def submit_action():
 # create submit button (looking to change to debounce and remove button)
 submit_button = tk.Button(left_frame, text="Submit", command=submit_action)#CHANGED ROOT TO LEFT_FRAME
 submit_button.pack(pady=10)
+
+# create a label to display the total weight of fish caught
+ttk.Separator(left_frame, orient=tk.HORIZONTAL).pack(pady=5, fill=tk.X)
+tk.Label(left_frame, text="Stats:", justify="left").pack(pady=5, fill=tk.X)
+total_weight = get_total_lbs_caught()
+total_weight_label = tk.Label(left_frame, text=f'You\'ve caught {total_weight} LBs of fish total!')
+total_weight_label.pack(pady=5)
 
 # initialize the database table
 create_table()
