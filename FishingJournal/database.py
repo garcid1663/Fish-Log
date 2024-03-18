@@ -70,7 +70,8 @@ def get_total_lbs_caught():
         try:
             cursor = conn.cursor()
             cursor.execute("SELECT SUM(column2) FROM entries")
-            return cursor.fetchone()[0]
+            total = cursor.fetchone()[0]
+            return total if total else 0
         finally:
             conn.close()
     else:

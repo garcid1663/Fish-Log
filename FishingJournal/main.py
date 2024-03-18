@@ -5,6 +5,8 @@ from tkinter import ttk
 from database import create_table, insert_entry, search_database, delete_entry, get_total_lbs_caught
 import pathlib, os
 
+# initialize the database table
+create_table()
 
 # Create the main window
 root = tk.Tk()
@@ -71,9 +73,6 @@ tk.Label(left_frame, text="Stats:", justify="left").pack(pady=5, fill=tk.X)
 total_weight = get_total_lbs_caught()
 total_weight_label = tk.Label(left_frame, text=f'You\'ve caught {total_weight} LBs of fish total!')
 total_weight_label.pack(pady=5)
-
-# initialize the database table
-create_table()
 
 #text before the search box
 search_label = tk.Label(search_frame, text="Search by keyword:")
