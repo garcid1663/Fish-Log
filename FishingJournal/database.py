@@ -1,11 +1,15 @@
 # database.py
 import sqlite3
+import pathlib, os, datetime
+
 
 def create_connection():
     """Create a database connection and return the connection object."""
+    current_dir = pathlib.Path(__file__).parent.resolve() # current directory
+    db_path = os.path.join(current_dir, 'my_data.db')
     conn = None
     try:
-        conn = sqlite3.connect('my_data.db')
+        conn = sqlite3.connect(db_path)
     except sqlite3.Error as e:
         print(f"SQLite error: {e}")  # This line will print the exact error
     return conn
@@ -24,7 +28,8 @@ def create_table():
                     column2 TEXT,
                     column3 TEXT,
                     column4 TEXT,
-                    column5 TEXT
+                    column5 TEXT,
+                    column6 TEXT
                 )
             ''')
             conn.commit()
@@ -39,8 +44,8 @@ def insert_entry(column1, column2, column3, column4, column5):
     if conn is not None:
         try:
             cursor = conn.cursor()
-            cursor.execute('INSERT INTO entries (column1, column2, column3, column4, column5) VALUES (?, ?, ?, ?, ?)', 
-                           (column1, column2, column3, column4, column5))
+            cursor.execute('INSERT INTO entries (column1, column2, column3, column4, column5, column6) VALUES (?, ?, ?, ?, ?, ?)', 
+                           (column1, column2, column3, column4, column5, datetime.datetime.now()))
             conn.commit()
         finally:
             conn.close()
@@ -54,7 +59,7 @@ def search_database(query):
         try:
             cursor = conn.cursor()
             # Use a wildcard search for a match in any of the columns
-            cursor.execute("SELECT * FROM entries WHERE column1 LIKE ? OR column2 LIKE ? OR column3 LIKE ? OR column4 LIKE ? OR column5 LIKE ?", 
+            cursor.execute("SELECT * FROM entries WHERE column1 LIKE ? OR column2 LIKE ? OR column3 LIKE ? OR column4 LIKE ? OR column5 LIKE ? ORDER BY column6 DESC", 
                            ('%' + query + '%', '%' + query + '%', '%' + query + '%', '%' + query + '%', '%' + query + '%'))
             return cursor.fetchall()
         finally:
