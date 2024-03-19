@@ -96,8 +96,7 @@ style = ttk.Style()
 style.theme_use("default")
 
 # style for Treeview
-style.configure("Treeview",
-                rowheight=25)
+style.configure("Treeview", rowheight=25)
 
 # style for Treeview headings maintains default color provided by Tkinter
 style.configure("Treeview.Heading",
@@ -158,12 +157,21 @@ def delete_action():
     selection = result_tree.selection()  # Get the selected items
 
     if selection:
+        # Initialize an empty list to store the IDs that you want to delete
+        ids_to_delete = []
+        # Loop through each selected item in the Treeview
+        for item in selection:
+            index = result_tree.index(item)# Get the index of the current item in the Treeview
+            entry_id = entry_ids[index] # Use the index to get the corresponding ID from the entry_ids list
+            ids_to_delete.append(entry_id)# Add the ID to the ids_to_delete list
+
         for selected_item in selection:
-            # Get the index of the selected item
-            index = result_tree.index(selected_item)
-            entry_id = entry_ids[index]  # Get the ID from the stored list
-            delete_entry(entry_id)  # Pass the ID to delete_entry
             result_tree.delete(selected_item)  # Remove from Treeview
+
+        # Now, delete the entries from the database and the entry_ids list
+        for entry_id in ids_to_delete:
+            delete_entry(entry_id)  # Pass the ID to delete_entry
+            entry_ids.remove(entry_id)  # Remove the ID from entry_ids
 
 # Add a delete button
 delete_button = tk.Button(right_frame, text="Delete", command=delete_action)
