@@ -2,9 +2,11 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from database import create_table, insert_entry, search_database, delete_entry
+from database import create_table, insert_entry, search_database, delete_entry, get_total_lbs_caught, get_total_entries
 import pathlib, os, datetime
 
+# initialize the database table
+create_table()
 
 # Create the main window
 root = tk.Tk()
@@ -84,9 +86,6 @@ submit_button.pack(side= tk.LEFT, padx=(90,0))
 clear_button = tk.Button(entry_button_frame, text="Clear", command=clear_action)
 clear_button.pack(side= tk.RIGHT,padx=10)
 
-# initialize the database table
-create_table()
-
 #text before the search box
 search_label = tk.Label(search_frame, text="Search by keyword:")
 search_label.pack(side=tk.LEFT, padx=(0,5))
@@ -140,7 +139,6 @@ column_width = total_width // len(column_headers)  # Divide equally among column
 for col in column_headers:
     result_tree.column(col, width=column_width, anchor='w')
 
-
 # Add a search box
 search_entry = tk.Entry(search_frame)  # Add it to search_frame instead of right_frame
 search_entry.pack(side=tk.LEFT, padx=(0,5)) 
@@ -177,5 +175,22 @@ def delete_action():
 delete_button = tk.Button(right_frame, text="Delete", command=delete_action)
 delete_button.pack(pady=5)
 
+
+
+# create a label to display the total weight of fish caught
+ttk.Separator(left_frame, orient=tk.HORIZONTAL).pack(pady=5, fill=tk.X)
+tk.Label(left_frame, text="Stats:", justify="left").pack(pady=5, fill=tk.X)
+
+total_weight_label = tk.Label(left_frame)
+total_weight_label.pack(pady=5)
+
+def update_totals():
+    total_weight = get_total_lbs_caught()
+    total_fish = get_total_entries()
+    total_weight_label.config(text=f'You\'ve caught {total_weight} LBs of fish total!\nYou\'ve caught {total_fish} fish in total!')
+    root.after(5000, update_totals) 
+
+
+update_totals()
 # Start the GUI event loop
 root.mainloop()
