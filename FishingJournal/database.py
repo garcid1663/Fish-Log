@@ -38,6 +38,36 @@ def create_table():
     else:
         print("Error! Cannot create the database connection.")
 
+#function to get total fish caught
+def get_total_entries():
+    conn = create_connection()
+    if conn is not None:
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) FROM entries")
+            total = cursor.fetchone()[0]
+            return total if total else 0
+        finally:
+            conn.close
+    else:
+        print("Error cannot create database connection.")
+        return 0
+            
+#function to get total fish weight
+def get_total_lbs_caught():
+    conn = create_connection()
+    if conn is not None:
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT SUM(column2) FROM entries")
+            total = cursor.fetchone()[0]
+            return total if total else 0
+        finally:
+            conn.close()
+    else:
+        print("Error! Cannot create the database connection.")
+        return 0
+
 def insert_entry(column1, column2, column3, column4, column5):
     """Insert a new entry into the entries table."""
     conn = create_connection()
