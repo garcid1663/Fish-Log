@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from database import create_table, insert_entry, search_database, delete_entry, get_total_lbs_caught, get_total_entries
-import pathlib, os, datetime
+import pathlib, os, sys
 
 # initialize the database table
 create_table()
@@ -19,6 +19,20 @@ current_dir = pathlib.Path(__file__).parent.resolve() # current directory
 img_path = os.path.join(current_dir, img_file_name)
 img= PhotoImage(file=img_path)
 root.iconphoto(False,img)
+
+# Determine if we're running as a bundled executable (such as with PyInstaller)
+if getattr(sys, 'frozen', False):
+    application_path = sys._MEIPASS
+else:
+    # If we're running as a normal script, get the path of the current file
+    application_path = pathlib.Path(__file__).parent
+
+# Construct the full path to the icon file
+icon_path = os.path.join(application_path, 'picfish.ico')
+
+# Use the icon file path with iconbitmap method to set the application icon
+#print(icon_path)
+root.iconbitmap(default=icon_path)
 
 
 #frames for left & right sides
@@ -62,7 +76,7 @@ def submit_action(event=None):
     # insert the data into the database
     insert_entry(data[0], data[1], data[2], data[3], data[4])
     search_action()
-    print("Saved to database:", data)
+    #print("Saved to database:", data)
 
 #bind return key to submit data in all entry boxes
 for entry in entries:
